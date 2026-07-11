@@ -2,6 +2,7 @@ name: Build Cross-Platform Binaries
 
 env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 on:
   push:
@@ -10,12 +11,11 @@ on:
 
 jobs:
   build:
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-    
-    runs-on: ${{ matrix.os }}
-
+        
     steps:
     - name: Checkout external repository
       uses: actions/checkout@v4
@@ -32,19 +32,21 @@ jobs:
         cache: 'pip'
 
     - name: Install Base Dependencies
+      # We removed the 'shell' override and used a python script or standard cross-platform syntax
       run: |
         python -m pip install --upgrade pip
-        if (Test-Path requirements.txt) { pip install -r requirements.txt }
-        pip install nuitka zstandard
-      shell: ${{ matrix.os == 'ubuntu-latest' && 'bash' || 'pwsh' }}
+        python -c "import os; os.path.exists('requirements.txt') and os.system('pip install -r requirements.txt')"
+        python -m pip install nuitka zstandard
 
     - name: Build Windows EXE
-      if: matrix.os == 'windows-latest'
+      # FIXED: Added missing ${{ }} around the matrix condition
+      if: ${{ matrix.os == 'windows-latest' }}
       run: |
         ./build.bat
 
     - name: Build Linux Binary
-      if: matrix.os == 'ubuntu-latest'
+      # FIXED: Added missing ${{ }} around the matrix condition
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
         chmod +x build.sh
         ./build.sh
