@@ -13,11 +13,13 @@ jobs:
         os: [windows-latest, ubuntu-latest]
         include:
           - os: windows-latest
-            artifact_name: sas_qr.exe
+            artifact_name: win-drop
             file_name: run.exe
+            final_name: sas_qr.exe
           - os: ubuntu-latest
-            artifact_name: sas_qr.AppImage
+            artifact_name: lin-drop
             file_name: run.bin
+            final_name: sas_qr.AppImage
         
     steps:
     - name: Checkout external repository
@@ -51,12 +53,15 @@ jobs:
         chmod +x build.sh
         ./build.sh
 
-    # Hier laden wir die Binaries temporär hoch
+    - name: Rename binary for release
+      shell: bash
+      run: mv ${{ matrix.file_name }} ${{ matrix.final_name }}
+
     - name: Upload temporary artifact
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.artifact_name }}
-        path: ${{ matrix.file_name }}
+        path: ${{ matrix.final_name }}
 
   release:
     needs: build
@@ -73,7 +78,6 @@ jobs:
       with:
         merge-multiple: true 
 
-    # Erstellt den Date-Release und lädt BEIDE Dateien auf einmal hoch
     - name: Create Date Release
       uses: softprops/action-gh-release@v2
       with:
@@ -84,7 +88,6 @@ jobs:
           sas_qr.exe
           sas_qr.AppImage
 
-    # Aktualisiert den Latest-Release mit BEIDEN Dateien auf einmal
     - name: Update Latest Release
       uses: softprops/action-gh-release@v2
       with:
