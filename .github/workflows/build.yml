@@ -102,8 +102,8 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          ghcr.io/${{ github.repository }}/sas-qr:latest
-          ghcr.io/${{ github.repository }}/sas-qr:${{ steps.date.outputs.date }}
+          ghcr.io/${{ github.repository }}/sas_db:latest
+          ghcr.io/${{ github.repository }}/sas_db:${{ steps.date.outputs.date }}
 
     - name: Create Date Release
       uses: softprops/action-gh-release@v2

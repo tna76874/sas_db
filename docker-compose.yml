@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: ghcr.io/tna76874/sas_db:latest
     container_name: sas_qr_app
     ports:
       - "8000:8000"
