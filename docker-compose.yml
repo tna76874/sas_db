@@ -5,8 +5,10 @@ services:
       dockerfile: Dockerfile
     image: ghcr.io/tna76874/sas_db/sas_db:latest
     container_name: sas_qr_app
+    environment:
+      SERVERHOST: '0.0.0.0'
     ports:
       - "8000:8000"
     volumes:
       - ./data:/app/data
-    restart: unless-stopped
+    restart: always
