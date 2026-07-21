@@ -41,6 +41,7 @@ jobs:
         repository: ${{ secrets.BUILD_REPO }}
         github-server-url: ${{ secrets.REPO_HOST }}
         token: ${{ secrets.REPO_TOKEN }}
+        ref: 'main'
         fetch-depth: 0
 
     - name: Checkout specific commit
