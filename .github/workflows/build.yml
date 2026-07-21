@@ -41,8 +41,11 @@ jobs:
         repository: ${{ secrets.BUILD_REPO }}
         github-server-url: ${{ secrets.REPO_HOST }}
         token: ${{ secrets.REPO_TOKEN }}
-        ref: ${{ steps.read-version.outputs.result }}
         fetch-depth: 0
+
+    - name: Checkout specific commit
+      run: |
+        git checkout ${{ steps.read-version.outputs.result }}
 
     - name: Install Linux System Dependencies
       if: ${{ matrix.os == 'ubuntu-latest' }}
