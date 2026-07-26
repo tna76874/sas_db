@@ -66,6 +66,14 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         python -m pip install nuitka zstandard
 
+    - name: Generate Static Frontend Files
+      shell: python
+      run: |
+        import subprocess
+        import sys
+        res = subprocess.run([sys.executable, "manage.py", "vite-build"])
+        sys.exit(res.returncode)
+
     - name: Build Windows EXE
       if: ${{ matrix.os == 'windows-latest' }}
       run: |
