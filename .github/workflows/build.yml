@@ -7,15 +7,11 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
         include:
-          - os: windows-latest
-            artifact_name: win-drop
-            file_name: run.exe
-            final_name: sas_qr.exe
           - os: ubuntu-latest
             artifact_name: lin-drop
             file_name: run.bin
@@ -73,11 +69,6 @@ jobs:
         import sys
         res = subprocess.run([sys.executable, "manage.py", "vite-build"])
         sys.exit(res.returncode)
-
-    - name: Build Windows EXE
-      if: ${{ matrix.os == 'windows-latest' }}
-      run: |
-        ./build.bat
 
     - name: Build Linux Binary
       if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -138,7 +129,6 @@ jobs:
         name: Release vom ${{ steps.date.outputs.date }}
         body: "Archiv-Release vom ${{ steps.date.outputs.date }}."
         files: |
-          sas_qr.exe
           sas_qr.AppImage
 
     - name: Update Latest Release
@@ -148,5 +138,4 @@ jobs:
         name: Latest Release
         body: "Die aktuellsten Binaries"
         files: |
-          sas_qr.exe
           sas_qr.AppImage
